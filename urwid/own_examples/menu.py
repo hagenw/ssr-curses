@@ -1,5 +1,6 @@
 import urwid
 
+# define menu entries
 entries = [
         ('1', 'Play'),
         ('2', 'Stop'),
@@ -21,16 +22,18 @@ loop = urwid.MainLoop(placeholder, palette, unhandled_input=exit_on_q)
 loop.widget = urwid.AttrMap(placeholder, 'bg')
 loop.widget.original_widget = urwid.Filler(urwid.Columns([]),valign='bottom')
 
-def add_menu_entry(number, name):
-    button_txt = urwid.Text(('entry_text', name), align='left')
-    button_key = urwid.Text(('entry_button', u" F" + number), align='left')
-    # 'pack' calculates the needed size of the column with F1 etc.
-    entry = urwid.Columns([('pack', button_key), button_txt])
-    return urwid.AttrMap(entry, 'streak')
+def add_menu_entries(entries):
+    entry_list = []
+    for entry in entries:
+        button_txt = urwid.Text(('entry_text', entry[1]), align='left')
+        button_key = urwid.Text(('entry_button', u" F" + entry[0]), align='left')
+        # 'pack' calculates the needed size of the column with F1 etc.
+        button = urwid.Columns([('pack', button_key), button_txt])
+        entry_list.append(urwid.AttrMap(button, 'streak'))
+    return entry_list
     
 columns = loop.widget.base_widget # .base_widget skips the decorations
-for item in [add_menu_entry('1','Play'), add_menu_entry('2','Pause'),
-        add_menu_entry('3','Open'), add_menu_entry('4','Quit')]:
+for item in add_menu_entries(entries):
     columns.contents.append((item, columns.options()))
 
 loop.run()
